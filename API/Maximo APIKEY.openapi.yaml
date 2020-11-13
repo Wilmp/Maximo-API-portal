@@ -1,0 +1,75 @@
+openapi: 3.0.1
+info:
+  title: Maximo APIKEY
+  description: ontwikkel-oslc.maximo.ns.nl - test-int.maximo.ns.nl
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/maximokeyapi
+paths:
+  /create:
+    post:
+      summary: RestAPI key
+      description: RestAPI key
+      operationId: RestAPI-key
+      parameters:
+        - name: MAXAUTH
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApitokenBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json: { }
+        '201':
+          description: created
+          content:
+            application/json: { }
+  /revoke:
+    post:
+      summary: RestAPI key revoke
+      description: RestAPI key revoke
+      operationId: 5f3a9395e0d61d7571167c53
+      parameters:
+        - name: apikey
+          in: query
+          description: API key revoke
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApitokenBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json: { }
+components:
+  schemas:
+    ApitokenBody:
+      type: object
+      properties:
+        expiration:
+          type: integer
+          default: -1
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]

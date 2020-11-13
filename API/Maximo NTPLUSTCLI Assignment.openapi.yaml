@@ -1,0 +1,213 @@
+openapi: 3.0.1
+info:
+  title: Maximo NTPLUSTCLI Assignment
+  description: 'Prikbord voor technici/Tabel ASSIGNMENT/Object structuur: NTPLUSTCLI_ASSIGNM'
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/MAXIMO-NTPLUSTCLI
+paths:
+  /NTPLUSTCLI_ASSIGNMEN:
+    get:
+      summary: Query NTPLUSTCLI_ASSIGNMENT
+      description: 'Prikbord op tabel assignment/Object structuur: NTPLUSTCLI_ASSIGNMEN/Template: NTPLUSTCLI_ASSIGNMEN'
+      operationId: NTPLUSTCLI_ASSIGNMENT_GET
+      parameters:
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+              - 0
+            type: integer
+            default: 1
+        - name: savedQuery
+          in: query
+          description: Maximo saved query naam
+          required: true
+          schema:
+            enum:
+              - NTPLUSTCLIMONT
+            type: string
+            default: NTPLUSTCLIMONT
+        - name: querytemplate
+          in: query
+          description: MAximo voorgedefinieerd antwoord
+          required: true
+          schema:
+            enum:
+              - NTPLUSTCLI_MONTLIST
+            type: string
+            default: NTPLUSTCLI_MONTLIST
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per response
+          schema:
+            type: integer
+        - name: apikey
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  '/NTPLUSTCLI_ASSIGNMEN/_{assignmentKey}':
+    post:
+      summary: Status NTPLUSTCLI_ASSIGNMENT
+      description: Prikbord Status update/Assignment status can be changed in three ways:/Start an assigment/Interrupt an assignment (assignment will be removed from the list)/Finish an assignment (assignment will be removed from the list)//
+      operationId: ntplustcli-assignment-post-status
+      parameters:
+        - name: assignmentKey
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: action
+          in: query
+          description: Webservice method
+          required: true
+          schema:
+            enum:
+              - wsmethod:startAssignment
+              - wsmethod:finishAssignment
+              - wsmethod:interruptAssignment
+              - STARTASS
+            type: string
+        - name: x-method-override
+          in: header
+          description: Override method
+          required: true
+          schema:
+            enum:
+              - PATCH
+              - BULK
+            type: string
+            default: PATCH
+        - name: apikey
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: properties
+          in: header
+          description: Return fields e.g.  status
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+    get:
+      summary: Query NTPLUSTCLI Details
+      description: Details toewijzing
+      operationId: query-ntplustcli-details
+      parameters:
+        - name: assignmentKey
+          in: path
+          required: true
+          schema:
+            enum:
+              - OTAzNjMxNg--
+            type: string
+            default: OTAzNjMxNg--
+        - name: lean
+          in: query
+          description: '1'
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: oslc.select
+          in: query
+          description: 'assignmentid,status,ntwogroup.wonum,ntwogroup.DESCRIPTION_LONGDESCRIPTION,workorder.ntclnum'
+          schema:
+            enum:
+              - 'assignmentid,status,ntwogroup.wonum,ntwogroup.DESCRIPTION_LONGDESCRIPTION,workorder.ntclnum'
+            type: string
+            default: 'assignmentid,status,ntwogroup.wonum,ntwogroup.DESCRIPTION_LONGDESCRIPTION,workorder.ntclnum'
+        - name: oslc.pageSize
+          in: query
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: savedQuery
+          in: query
+          schema:
+            enum:
+              - NTPLUSTCLI_LONGDESC
+              - NTPLUSTCLI_MONTDETAIL
+              - NTPLUSTCLI_MONTLIST
+            type: string
+        - name: querytemplate
+          in: query
+          schema:
+            type: string
+        - name: apikey
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  /NTPLUSTCLI_NTDIAGCOD:
+    get:
+      summary: Diagnose code
+      description: Ophalen diagnose codes
+      operationId: diagnose-code
+      parameters:
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: querytemplate
+          in: query
+          description: Voorgedefinieerde velden
+          schema:
+            enum:
+              - NTPLUSTCLI_NTDIAGCOD
+            type: string
+            default: NTPLUSTCLI_NTDIAGCOD
+        - name: apikey
+          in: header
+          description: API ekey
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]

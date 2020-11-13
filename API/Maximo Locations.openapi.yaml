@@ -1,0 +1,160 @@
+openapi: 3.0.1
+info:
+  title: Maximo Locations
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/NTPLUSTLOC_LOCATIONS
+paths:
+  /NTPLUSTLOC_LOCATIONS:
+    get:
+      summary: Query Locations
+      description: Maximo Locations - All OB-SB-RB locations
+      operationId: query-locations
+      parameters:
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: savedQuery
+          in: query
+          required: true
+          schema:
+            enum:
+              - NTPLUSTLOC001
+            type: string
+            default: NTPLUSTLOC001
+        - name: querytemplate
+          in: query
+          required: true
+          schema:
+            enum:
+              - NTPLUSTLOC_LOCATIONS
+            type: string
+            default: NTPLUSTLOC_LOCATIONS
+        - name: apikey
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  /NTPLUSTLOC_LOCHIERAR:
+    get:
+      summary: Location Hierarchy
+      description: Locatie hierarchie
+      operationId: location-hierarchy
+      parameters:
+        - name: lean
+          in: query
+          description: Namespaces
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: querytemplate
+          in: query
+          description: Voorgedefinieerde velden
+          required: true
+          schema:
+            enum:
+              - NTPLUSTLOC_LOCH_DA
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Waarde 0 als je ook de lege velden wilt meekrijgen. bv voor nalopen template
+          schema:
+            type: integer
+        - name: apikey
+          in: header
+          description: Login key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]
+x-ms-paths:
+  '/NTPLUSTLOC_LOCATIONS?lean={lean}&querytemplate={querytemplate}':
+    get:
+      summary: All Locations
+      description: All Locations
+      operationId: all-locations
+      parameters:
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: querytemplate
+          in: query
+          description: Query template voor vastgelegde velden
+          required: true
+          schema:
+            enum:
+              - LOCATIONS_DA
+              - NTPLUSTLOC_LOCATIONS
+            type: string
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: savedQuery
+          in: query
+          description: Applicatie query
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Ook lege velden tonen
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'

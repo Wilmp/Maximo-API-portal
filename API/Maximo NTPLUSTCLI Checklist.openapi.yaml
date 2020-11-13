@@ -1,0 +1,207 @@
+openapi: 3.0.1
+info:
+  title: Maximo NTPLUSTCLI Checklist
+  description: 'Prikbord voor technici/Tabel NTCHECKLISTTASK/Object structuur: NTPLUSTCLI_NTCHECKLI'
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/MAXIMO-NTPLUSTCLI-NTCHECKLIST
+paths:
+  '/NTPLUSTCLI_NTCHECKLI/_{assignmentKey}':
+    post:
+      summary: Checklist check/defect post
+      description: Afvinken checklijst
+      operationId: Checklist-check-defect-post
+      parameters:
+        - name: assignmentKey
+          in: path
+          description: ID van de checklist regel
+          required: true
+          schema:
+            type: string
+        - name: lean
+          in: query
+          description: wel of geen namespaces. Altijd 1 (geen)
+          required: true
+          schema:
+            enum:
+              - 0
+              - 1
+            type: integer
+            default: 1
+        - name: x-method-override
+          in: header
+          description: 'Override method, in principe altijd PATCH'
+          required: true
+          schema:
+            enum:
+              - PATCH
+              - BULK
+            type: string
+            default: PATCH
+        - name: apikey
+          in: header
+          description: API key van maximo gebruiker
+          required: true
+          schema:
+            type: string
+        - name: properties
+          in: header
+          description: 'Return fields. E.g. status, wonum'
+          schema:
+            type: string
+      requestBody:
+        description: Update velden
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body'
+      responses:
+        '200':
+          description: 'null'
+  /NTPLUSTCLI_NTCHECKLI:
+    get:
+      summary: Get Checklist
+      description: 'Prikbord op tabel assignment/Object structuur: NTPLUSTCLI_ASSIGNMEN/Template: NTPLUSTCLI_ASSIGNMEN'
+      operationId: Get-Checklist
+      parameters:
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+              - 0
+            type: integer
+            default: 1
+        - name: querytemplate
+          in: query
+          description: MAximo voorgedefinieerd antwoord
+          required: true
+          schema:
+            enum:
+              - NTPLUSTCLI_NTCHECKLI
+            type: string
+            default: NTPLUSTCLI_NTCHECKLI
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per response
+          schema:
+            type: integer
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.orderBy
+          in: query
+          description: Sorteren
+          schema:
+            type: string
+        - name: apikey
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+    post:
+      summary: Checklist BULK
+      description: Bulk update of ntchecklisttask
+      operationId: checklist-bulk
+      parameters:
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: x-method-override
+          in: header
+          required: true
+          schema:
+            enum:
+              - BULK
+            type: string
+            default: BULK
+        - name: properties
+          in: header
+          schema:
+            type: string
+        - name: apikey
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+components:
+  schemas:
+    Body: { }
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]
+x-ms-paths:
+  '/NTPLUSTCLI_NTCHECKLI/_{assignmentKey}?lean=1':
+    post:
+      summary: WUI follow up werkorder
+      description: Aanmaken Follow up werkorder vanuit inspectieregel
+      operationId: wui-follow-up-werkorder
+      parameters:
+        - name: assignmentKey
+          in: path
+          description: Key van de checklistregel (ntchecklisttaskid)
+          required: true
+          schema:
+            type: string
+        - name: action
+          in: query
+          description: Uit te voeren actie
+          required: true
+          schema:
+            enum:
+              - FOLLOWUP
+            type: string
+        - name: x-method-override
+          in: header
+          description: Type update
+          required: true
+          schema:
+            enum:
+              - PATCH
+            type: string
+            default: PATCH
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              ntclassificationid: '0110'
+              autoassign: false
+              commodity: C-HERWUI
+              commoditygroup: COR-HER
+              description: WUI werkorder maken
+              description_longdescription: Lange omschrijving
+              ntinzetbeperking: N
+              ntwovoorvertrek: J
+              wopriority: 2
+      responses:
+        '200':
+          description: 

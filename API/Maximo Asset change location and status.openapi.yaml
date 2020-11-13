@@ -1,0 +1,74 @@
+openapi: 3.0.1
+info:
+  title: Maximo Asset change location and status
+  description: Deze API is om veranderen van activum Status en locatie samen in maximo.
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/NTASSMOVESTATUS
+paths:
+  '/NTASSMOVESTATUS/{assetKey}':
+    post:
+      summary: Change Location and Status
+      description: 'body voorbeeld newstatus:NBVD , newlocation:633000 }'
+      operationId: change-location-and-status
+      parameters:
+        - name: assetKey
+          in: path
+          description: ID van de asset maximo veld assetuid
+          required: true
+          schema:
+            type: integer
+        - name: action
+          in: query
+          required: true
+          schema:
+            enum:
+              - NTASSMOVESTATUS
+            type: string
+            default: NTASSMOVESTATUS
+        - name: x-method-override
+          in: header
+          description: PATCH
+          required: true
+          schema:
+            enum:
+              - PATCH
+            type: string
+            default: PATCH
+        - name: apikey
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: patchtype
+          in: header
+          required: true
+          schema:
+            enum:
+              - MEGRE
+            type: string
+            default: MEGRE
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            enum:
+              - application/json
+            type: string
+            default: application/json
+      responses:
+        '202':
+          description: ''
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]

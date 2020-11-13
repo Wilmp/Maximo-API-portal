@@ -1,0 +1,240 @@
+openapi: 3.0.1
+info:
+  title: Maximo Assets
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/NTPLAASSET_ASSET
+paths:
+  /NTPLAASSET_ASSET/:
+    get:
+      summary: Query Assets
+      description: Query Activa in maximo
+      operationId: query-assets
+      parameters:
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: querytemplate
+          in: query
+          description: Query template voor vastgelegde velden
+          required: true
+          schema:
+            enum:
+              - ASSET_DA
+              - ASSET_CP
+            type: string
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: savedQuery
+          in: query
+          description: Applicatie query
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Ook lege velden tonen
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: pageno
+          in: query
+          description: Page Number
+          schema:
+            type: integer
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  /NTPLAASSET_ASSETSTHI/:
+    get:
+      summary: Asset Status history
+      description: Asset status historie
+      operationId: asset-status-history
+      parameters:
+        - name: lean
+          in: query
+          description: namespaces
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: querytemplate
+          in: query
+          description: Template met vaste velden
+          required: true
+          schema:
+            enum:
+              - NTPLAASSET_ASSETSTHI
+            type: string
+            default: NTPLAASSET_ASSETSTHI
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: savedQuery
+          in: query
+          description: Applicatie query naam
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Ook lege velden
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: pageno
+          in: query
+          description: Page Number
+          schema:
+            type: integer
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  /NTPLAASSET_ASSETTRAN/:
+    get:
+      summary: Asset Verplaatsingen
+      description: Verplaatsingen van activa
+      operationId: asset-verplaatsingen
+      parameters:
+        - name: querytemplate
+          in: query
+          description: Query template voor vastgelegde velden
+          required: true
+          schema:
+            enum:
+              - NTPLAASSET_ASSETTRAN
+            type: string
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: savedQuery
+          in: query
+          description: Applicatie query
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Ook lege velden tonen
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: pageno
+          in: query
+          description: Page Number
+          schema:
+            type: integer
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  /NTPLAASSET_PLUSASAON/:
+    get:
+      summary: Historie in uitbouw
+      description: In- en uitbouwhistorie. PLUSASAONOFF
+      operationId: historie-in-uitbouw
+      parameters:
+        - name: querytemplate
+          in: query
+          description: Query template voor vastgelegde velden
+          required: true
+          schema:
+            enum:
+              - NTPLAASSET_PLUSASAON
+            type: string
+            default: NTPLAASSET_PLUSASAON
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: savedQuery
+          in: query
+          description: Applicatie query
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Ook lege velden tonen
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: pageno
+          in: query
+          description: Page Number
+          schema:
+            type: integer
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]

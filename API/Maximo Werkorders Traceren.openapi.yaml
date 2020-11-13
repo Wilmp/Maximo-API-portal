@@ -1,0 +1,532 @@
+openapi: 3.0.1
+info:
+  title: Maximo Werkorders Traceren
+  description: 'Werkorders, Toewijzingen, Werklog'
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/NTPLUSAWO_WORKORDER
+paths:
+  /NTPLUSAWO_WORKORDER:
+    get:
+      summary: Query Werkorders
+      description: Werkorder overzicht
+      operationId: query-werkorders
+      parameters:
+        - name: lean
+          in: query
+          description: lean=1 is geen namespaces
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: querytemplate
+          in: query
+          description: voorgedefinieerde reply velden
+          required: true
+          schema:
+            enum:
+              - NTPLUSAWO_WORKORDER
+              - NTPLUSAWO_WORKORDER_LD
+              - NTPLUSAWO_DA_ODS
+              - NTPLUSAWO_DA_WOCOMPLETE
+              - NTPLUSAWO_WORKORDER_CP
+              - NTPLUSAWO_WO_MONT_90
+              - NTPLUSAWO_WO_MONT_90_DETAILS
+            type: string
+            default: NTPLUSAWO_WORKORDER
+        - name: savedQuery
+          in: query
+          description: applicatie queries in Maximo
+          schema:
+            type: string
+        - name: oslc.where
+          in: query
+          description: 'Example: TOPLEVELPARENT.SERIALNUM=(4044)'
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Waarde 0 als je ook de lege velden wilt meekrijgen. Bv voornalopen template
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: tlrange
+          in: query
+          description: Time range
+          schema:
+            type: string
+        - name: oslc.orderBy
+          in: query
+          description: Sortering -attr1 aflopend +attr1 oplopend
+          schema:
+            type: string
+        - name: apikey
+          in: header
+          description: Login key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  '/NTPLUSAWO_WORKORDER/_{wokey}':
+    get:
+      summary: Query Werkorders Uitgebreid
+      description: Werkorder overzicht
+      operationId: Werkorder-overzicht
+      parameters:
+        - name: wokey
+          in: path
+          description: Base 64 Siteid/Wonum
+          required: true
+          schema:
+            type: string
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - '0'
+              - '1'
+            type: string
+            default: '1'
+        - name: querytemplate
+          in: query
+          required: true
+          schema:
+            enum:
+              - NTPLUSAWO_WORKORDER
+              - NTPLUSAWO_WORKORDER_LD
+              - NTPLUSAWO_WO_MONT_90_DETAILS
+              - NTPLUSAWO_WO_MONT_90
+            type: string
+        - name: apikey
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+    post:
+      summary: Workorder update
+      description: Veld update op werkorder
+      operationId: workorder-update
+      parameters:
+        - name: wokey
+          in: path
+          description: Siteid en wonum
+          required: true
+          schema:
+            type: string
+        - name: lean
+          in: query
+          description: No namespaces
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+        - name: x-method-override
+          in: header
+          description: Type update
+          required: true
+          schema:
+            enum:
+              - PATCH
+            type: string
+            default: PATCH
+      requestBody:
+        description: Fields to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body'
+            example:
+              status: GGK
+              memo: Eventueel commentaar
+      responses:
+        '200':
+          description: 'null'
+  /NTPLUSAWO_WORKLOG:
+    get:
+      summary: Worklog
+      description: Werklog
+      operationId: worklog
+      parameters:
+        - name: querytemplate
+          in: query
+          required: true
+          schema:
+            enum:
+              - NTPLUSAWO_WORKLOG
+            type: string
+        - name: lean
+          in: query
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: oslc.where
+          in: query
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: waarde 0 als je ook lege waarden wilt zien
+          schema:
+            type: integer
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  /NTPLUSAWO_ASSIGNMENT:
+    get:
+      summary: Toewijzingen
+      description: Assignments-toewijzingen
+      operationId: toewijzingen
+      parameters:
+        - name: lean
+          in: query
+          description: No namespaces
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: querytemplate
+          in: query
+          description: Standaard velden
+          required: true
+          schema:
+            enum:
+              - NTPLUSAWO_ASSIGNMENT
+              - NTPLUSAWO_ASSIGNMENT_CP
+            type: string
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: savedQuery
+          in: query
+          description: Standaard query
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: _dropnulls
+          in: query
+          description: Lege velden tonen
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: apikey
+          in: header
+          description: API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  '/NTPLUSAWO_ASSIGNMENT/_{assignmentkey}':
+    post:
+      summary: Toewijzingen Update
+      description: Assignments/toewijzingen
+      operationId: toewijzingen-update
+      parameters:
+        - name: assignmentkey
+          in: path
+          description: Base 64 key van assignment tabel
+          required: true
+          schema:
+            type: string
+        - name: lean
+          in: query
+          description: No namespaces
+          required: true
+          schema:
+            enum:
+              - 1
+            type: integer
+            default: 1
+        - name: apikey
+          in: header
+          description: API Key
+          required: true
+          schema:
+            type: string
+        - name: x-method-override
+          in: header
+          description: Update methode
+          required: true
+          schema:
+            enum:
+              - PATCH
+            type: string
+            default: PATCH
+        - name: action
+          in: header
+          description: Applicatie actie
+          schema:
+            type: string
+        - name: properties
+          in: header
+          description: Velden om terug te geven
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NTPLUSAWO_ASSIGNMENT_assignmentkeyPostRequest'
+            example: '(laborcode):(00099999),(scheduledate):(2020-09-11T19:24:52+01:00)'
+      responses:
+        '200':
+          description: OK
+  /NTPLUSAWO_WPLABORCP:
+    get:
+      summary: Planned Labor
+      description: Gepland arbeid op werkorders.
+      operationId: planned-labor
+      parameters:
+        - name: querytemplate
+          in: query
+          description: Template met vaste velden
+          required: true
+          schema:
+            enum:
+              - NTPLUSAWO_WPLABORCP
+            type: string
+        - name: savedQuery
+          in: query
+          description: Applicatie query naam
+          schema:
+            type: string
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: _dropnulls
+          in: query
+          description: Ook lege velden
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  /NTPLUSAWO_PLUSTWOQUA:
+    get:
+      summary: WO kwalificaties
+      description: Kwalificaties op werkorder en taak
+      operationId: wo-kwalificaties
+      parameters:
+        - name: querytemplate
+          in: query
+          description: Template met vaste velden
+          required: true
+          schema:
+            enum:
+              - NTPLUSAWO_PLUSTWOQUA_CP
+              - NTPLUSAWO_PLUSTWOQUA
+            type: string
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: savedQuery
+          in: query
+          description: Applicatie query naam
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Ook lege velden
+          schema:
+            enum:
+              - 0
+            type: integer
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+  /NTPLUSAWO_WOACTIVITY:
+    get:
+      summary: Taken
+      description: Werkorder Taken
+      operationId: taken
+      parameters:
+        - name: querytemplate
+          in: query
+          description: Template met vaste velden
+          required: true
+          schema:
+            enum:
+              - NTPLUSAWO_WOACTIVITY_CP
+            type: string
+        - name: oslc.where
+          in: query
+          description: Where clausule
+          schema:
+            type: string
+        - name: oslc.pageSize
+          in: query
+          description: Aantal records per bericht
+          schema:
+            type: integer
+        - name: savedQuery
+          in: query
+          description: Applicatie query naam
+          schema:
+            type: string
+        - name: _dropnulls
+          in: query
+          description: Ook lege velden
+          schema:
+            type: integer
+        - name: oslc.orderBy
+          in: query
+          description: Sortering -attr aflopend +attr oplopend
+          schema:
+            type: string
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'null'
+components:
+  schemas:
+    Body:
+      example:
+        status: GGK
+        memo: Eventueel commentaar
+    NTPLUSAWO_ASSIGNMENT_assignmentkeyPostRequest:
+      example: '(laborcode):(00099999),(scheduledate):(2020-09-11T19:24:52+01:00)'
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]
+x-ms-paths:
+  '/NTPLUSAWO_WORKORDER/_{wokey}?action={action}':
+    post:
+      summary: Change Status
+      description: Change Status
+      operationId: change-status
+      parameters:
+        - name: wokey
+          in: path
+          description: Workorder key
+          required: true
+          schema:
+            type: string
+        - name: action
+          in: query
+          description: Uit te voeren actie
+          required: true
+          schema:
+            enum:
+              - wsmethod:changeStatus
+            type: string
+            default: wsmethod:changeStatus
+        - name: apikey
+          in: header
+          description: API key
+          required: true
+          schema:
+            type: string
+        - name: x-method-override
+          in: header
+          description: Type update
+          required: true
+          schema:
+            enum:
+              - PATCH
+            type: string
+            default: PATCH
+        - name: properties
+          in: header
+          description: Velden om terug te geven
+          schema:
+            type: string
+      requestBody:
+        description: Status aangeven
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body'
+            example:
+              status: GGK
+              memo: Eventueel commentaar
+      responses:
+        '200':
+          description: 'null'
