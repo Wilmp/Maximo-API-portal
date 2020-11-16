@@ -1,0 +1,156 @@
+openapi: 3.0.1
+info:
+  title: CCM - Maximo API
+  description: API voor Maximo
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/maximo
+paths:
+  /locatie:
+    get:
+      tags:
+        - Locatie
+      summary: Krijg de lijst met locaties
+      description: Krijg de lijst met locaties
+      operationId: GetLocatieList
+      parameters:
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+        - name: MaximoSessionId
+          in: header
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: { }
+  '/werkorderreiniging/{standplaats}':
+    get:
+      tags:
+        - WerkorderReiniging
+      summary: Krijg de persoonlijke lijst met reiniging werkorders vanuit de ESB
+      description: Krijg de persoonlijke lijst met reiniging werkorders vanuit de ESB
+      operationId: HaalStandplaatsLijstOp
+      parameters:
+        - name: standplaats
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+        - name: MaximoSessionId
+          in: header
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: { }
+  /werkorderreiniging:
+    post:
+      tags:
+        - WerkorderReiniging
+      summary: Update een reiniging werkorder
+      description: Update een reiniging werkorder
+      operationId: WerkStandplaatsWerkorderBij
+      parameters:
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+        - name: MaximoSessionId
+          in: header
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/UpdateWerkorderReinigingRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWerkorderReinigingRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWerkorderReinigingRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateWerkorderReinigingRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: { }
+  /version:
+    get:
+      tags:
+        - Version
+      summary: Ophalen app versie info
+      description: Ophalen app versie info
+      operationId: Get
+      parameters:
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+        - name: MaximoSessionId
+          in: header
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+components:
+  schemas:
+    Version:
+      type: object
+      properties:
+        minimalVersion:
+          type: string
+        currentVersion:
+          type: string
+    UpdateWerkorderReinigingRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          enum:
+            - VolledigGereinigd
+            - OnvolledigGereinigd
+            - NietGereinigdPastNietInPlanning
+            - NietGereinigdVerkeerdSpoor
+          type: string
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]
