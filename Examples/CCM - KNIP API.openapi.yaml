@@ -1,0 +1,269 @@
+openapi: 3.0.1
+info:
+  title: CCM - KNIP API
+  description: API voor betalingen op de trein.
+  version: '1.0'
+servers:
+  - url: https://gateway.apiportaltst.ns.nl/digipay
+paths:
+  /tikkie/maakbetaling:
+    post:
+      tags:
+        - Tikkie
+      summary: PostPaymentRequest
+      description: Initieer een nieuw betalingsverzoek met Tikkie
+      operationId: 5cebeb61092bef10b89aee59
+      parameters:
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+      requestBody:
+        description: Input voor een nieuw betalingsverzoek Tikkie.
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/TikkieRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TikkieRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/TikkieRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/TikkieRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: { }
+  /tikkie/betalingvoltooid:
+    post:
+      tags:
+        - Tikkie
+      summary: PostTikkieSuccess
+      description: Notificatie URL dat ABN-AMRO gebruikt bij voltooing van een betaling
+      operationId: 5cebeb61092bef10b89aee5a
+      parameters:
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/OpenPayment'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenPayment'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/OpenPayment'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/OpenPayment'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: { }
+  /tikkie/ticket:
+    get:
+      tags:
+        - Tikkie
+      summary: PostTicketValidation
+      description: Valideer in de web app de token die meegestuurd word vanuit ABN
+      operationId: 5cf13ce3092bef10b89aef1b
+      parameters:
+        - name: paymentToken
+          in: query
+          schema:
+            type: string
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: { }
+  /tikkie/mail:
+    post:
+      tags:
+        - Tikkie
+      summary: PostMail
+      operationId: 5d00fc8b092bef10204a9776
+      parameters:
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/TicketRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/TicketRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/TicketRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: { }
+  /tikkie/feedback:
+    post:
+      tags:
+        - Tikkie
+      summary: PostTikkieFeedback
+      description: Feedback van de reiziger op t gebruik van Knip
+      operationId: 5d249f6e092bef10e40914ee
+      parameters:
+        - name: paymentToken
+          in: query
+          schema:
+            type: string
+        - name: api-version
+          in: query
+          description: API Version
+          schema:
+            type: string
+            default: '1.0'
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/FeedbackForm'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackForm'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackForm'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/FeedbackForm'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: { }
+components:
+  schemas:
+    TikkieRequest:
+      type: object
+      properties:
+        deviceNotificationToken:
+          type: string
+          description: 'ID van je device, voor notificatie'
+        totaalPrijs:
+          type: integer
+          description: Bedrag in eurocenten
+          format: int32
+        reizigersAantal:
+          type: integer
+          description: Aantal personen voor de betaling
+          format: int32
+      description: Input voor een nieuw betalingsverzoek Tikkie.
+    OpenPayment:
+      type: object
+      properties:
+        amountInCents:
+          type: string
+        currency:
+          type: string
+        description:
+          type: string
+        created:
+          type: string
+          format: date-time
+        expired:
+          type: object
+        status:
+          enum:
+            - OPEN
+            - CLOSED
+            - EXPIRED
+            - MAX_YIELD_REACHED
+            - MAX_SUCCESSFUL_PAYMENTS_REACHED
+          type: string
+        bankAccountYieldedTooFast:
+          type: boolean
+        externalId:
+          type: string
+        paymentRequestToken:
+          type: string
+        payments:
+          uniqueItems: false
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment'
+    Payment:
+      type: object
+      properties:
+        paymentToken:
+          type: string
+        counterPartyName:
+          type: string
+        amountInCents:
+          type: string
+        amountCurrency:
+          type: string
+        description:
+          type: string
+        created:
+          type: string
+          format: date-time
+        onlinePaymentStatus:
+          enum:
+            - NEW
+            - PENDING
+            - PAID
+            - NOT_PAID
+          type: string
+    TicketRequest:
+      type: object
+      properties:
+        paymentReference:
+          type: string
+          description: Payment Reference Id
+        toEmail:
+          type: string
+          description: Email address of the receiver
+    FeedbackForm:
+      type: object
+      properties:
+        selectedHappinessIndex:
+          type: integer
+          format: int32
+        feedback:
+          type: string
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]
